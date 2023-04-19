@@ -1,4 +1,4 @@
-require_relative 'validate'
+require_relative 'telvue'
 
 class TransformValidator
   include Validate
@@ -12,25 +12,25 @@ class TransformValidator
 end
 
 class Transform
-  include Validation
+  include Validator
 
-  attr_reader :duration, :time_format
+  attr_reader :duration
 
   def initialize
   end
 
+  # duration = seconds, time_format will be customized
   def process_time(duration, time_format = 'HH:MM:SS')
     @duration = duration
-    @time_format = time_format
 
-    valid? ? duration_to_time : errors.full_messages
+    valid? ? duration_to_time(time_format) : errors.full_messages
   end
 
   private
-  def duration_to_time
-    format = @time_format
-    { 'HH' => '%H', 'MM' => '%M', 'SS' => '%S' }.each { |key, value| format.gsub! key, value }
+  def duration_to_time(time_format)
+    # make the correct time format for Time class
+    { 'HH' => '%H', 'MM' => '%M', 'SS' => '%S' }.each { |key, value| time_format.gsub! key, value }
     
-    Time.at(@duration).utc.strftime(format)
+    Time.at(@duration).utc.strftime(time_format)
   end
 end

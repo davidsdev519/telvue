@@ -1,33 +1,19 @@
-module Validation
-  def valid?
-    klass = Object.const_get("#{self.class.name}Validator")
-    @validator = klass.new(self)
-    @validator.valid?
-  end
+=begin
+  These are samples for validation
 
-  def errors
-    return {} unless defined?(@validator)
-    @validator.errors
-  end
-end
+  validates :duration, presence: true
+  validates :duration, only_number: true
+  validates :duration, type: Integer
+  validates :time_format, type: String
+  validates :duration,
+            msg: 'must be greater than or equal to 0',
+            with: proc { |p| p.duration >= 0 }
 
-class ValidationErrors
-  attr_reader :all
+  Tip: line 40 : You can add custom validation
 
-  def initialize
-    @all = {}
-  end
-
-  def add(name, msg)
-    (@all[name] ||= []) << msg
-  end
-
-  def full_messages
-    @all.map do |e|
-      "#{e.first.capitalize} #{e.last.join(' & ')}"
-    end.join
-  end
-end
+  Notice: Currently, it only returns one error even it has several validation errors
+  To return all errors, remove line 34
+=end
 
 module Validate
   def self.included(base)
@@ -40,15 +26,15 @@ module Validate
 
     def initialize(object)
       @object = object
-      @errors = ValidationErrors.new
+      @errors = ValidatorErrors.new
     end
 
     def valid?
       self.class.validators.each do |args|
-        return false unless @errors.all.empty?
+        return false unless @errors.msgs.empty?
         validate(args)
       end
-      @errors.all.empty?
+      @errors.msgs.empty?
     end
 
     private
