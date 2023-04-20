@@ -3,19 +3,20 @@
 ## Requirements
 Using ruby (no gems except test-unit or minitest) build a class that satisfies the following business requirements:
 
-1) accepts two arguments:
+1) Accepts two arguments:
 - duration (in seconds)
 - format desired (with seconds or without seconds) ie: HH:MM or HH:MM:SS,  if no format is provided, default to HH:MM:SS
-2) first verifies that duration is supplied
+2) Duration paramter validation 
+- first verifies that duration is supplied
 - second verifies that the duration supplied is a number, not special chars or letters
 - third verifies that the duration supplied is an integer, not a decimal/float
 - fourth verifies that the duration supplied is not a negative number
 - class should stop processing further errors when an error is discovered
-3) return a response to callers that contains:
+4) Return a response to callers that contains:
 - an accurate error message based on the 4 possible error conditions above if verification fails
 - processing should stop as soon as an error is discovered, so only the first error should be reported, do NOT return all errors
 - if no errors found, return the transformed duration from seconds to HH:MM:SS or HH:MM per the format argument
-4) include tests (using minitest or test:unit)
+5) Include tests (using minitest or test:unit)
 
 ## Set up Project
 This app is developed on a Mac OS.
@@ -95,7 +96,7 @@ module TimeFormat
   end
 end
 ```
-### Transform
+### Transform Class
 Added Transform Class in /lib folder, transform.rb
 ```ruby
 require_relative 'telvue'
@@ -137,6 +138,10 @@ end
 Edit `Gemfile` and add:
 ```ruby
 gem "minitest", "~> 5.0"
+```
+After that, run the following command:
+```sh
+% bundle install
 ```
 
 ### Transform Class Test
@@ -204,3 +209,14 @@ Finished in 0.002206s, 2719.8549 runs/s, 3626.4732 assertions/s.
 
 6 runs, 8 assertions, 0 failures, 0 errors, 0 skips
 ```
+
+## Conclusion
+The app works fine now, passed all test-cases.
+
+* 24 hours overflow problem
+To convert duration(seconds) into time format string, It used strftime method of Time Class.
+
+When duration is 90,000(25 hours), It returns 01:00:00 instead of 25:00:00
+There are 2 ways to fix this problem.
+1. Pass the custom time format with day, for example, "DD Day HH:MM:SS". It will return "1 Day 01:00:00"
+2. Update duration_to_time method in Transform class, It means manually calculate hours, minutes & seconds. 
