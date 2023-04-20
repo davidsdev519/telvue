@@ -16,12 +16,49 @@ Using ruby (no gems except test-unit or minitest) build a class that satisfies t
 - processing should stop as soon as an error is discovered, so only the first error should be reported, do NOT return all errors
 - if no errors found, return the transformed duration from seconds to HH:MM:SS or HH:MM per the format argument
 4) include tests (using minitest or test:unit)
+
+## Set up Project
+This app is developed on a Mac OS.
+
+* Ruby - 3.2.1
+
+Install the latest ruby using rbenv or asdf whatever you are familar with.
+
+Create the project
+```sh
+% bundle gem telvue 
+```
+
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+### Add Validate Module
+* Added validate module in /lib/telvue folder, validate.rb
+```ruby
+=begin
+  These are samples for validation
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+  validates :duration, presence: true
+  validates :duration, only_number: true
+  validates :duration, type: Integer
+  validates :time_format, type: String
+  validates :duration,
+            msg: 'must be greater than or equal to 0',
+            with: proc { |p| p.duration >= 0 }
 
-## Contributing
+  Tip: line 40 : You can add custom validation
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/telvue.
+  Notice: Currently, it only returns one error even it has several validation errors
+  To return all errors, remove line 34
+=end
+
+module Validate
+  def self.included(base)
+    base.send(:include, InstanceMethods)
+    base.extend(ClassMethods)
+  end
+  
+  ...
+  
+end
+```
+
