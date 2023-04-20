@@ -1,4 +1,4 @@
-class ValidatorErrors
+class ValidateErrors
   attr_reader :msgs
 
   def initialize

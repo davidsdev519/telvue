@@ -1,7 +1,10 @@
 require_relative 'telvue'
 
-class TransformValidator
+class Transform
   include Validate
+  include TimeFormat
+
+  attr_reader :duration
 
   validates :duration, presence: true
   validates :duration, only_number: true
@@ -9,27 +12,22 @@ class TransformValidator
   validates :duration,
             msg: 'must be greater than or equal to 0',
             with: proc { |p| p.duration >= 0 }
-end
-
-class Transform
-  include Validator
-
-  attr_reader :duration
 
   def initialize
+    super(self)
   end
 
-  # duration = seconds, time_format will be customized
-  def process_time(duration, time_format = 'HH:MM:SS')
+  # duration = seconds, time_format = HH:MM:SS - custom value
+  def process_time(duration, time_format = DEFAULT_TIME_FORMAT)
     @duration = duration
 
-    valid? ? duration_to_time(time_format) : errors.full_messages
+    valid? ? duration_to_time(time_format) : error_messages
   end
 
   private
+
   def duration_to_time(time_format)
-    # make the correct time format for Time class
-    { 'HH' => '%H', 'MM' => '%M', 'SS' => '%S' }.each { |key, value| time_format.gsub! key, value }
+    time_format = time_format_conversion(time_format)
     
     Time.at(@duration).utc.strftime(time_format)
   end

@@ -26,7 +26,7 @@ module Validate
 
     def initialize(object)
       @object = object
-      @errors = ValidatorErrors.new
+      @errors = ValidateErrors.new
     end
 
     def valid?
@@ -35,6 +35,10 @@ module Validate
         validate(args)
       end
       @errors.msgs.empty?
+    end
+
+    def error_messages
+      @errors.full_messages
     end
 
     private

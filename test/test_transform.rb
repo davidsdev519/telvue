@@ -33,11 +33,11 @@ describe Transform do
       expect(@transform.process_time(-5)).must_equal error
     end
 
-    it "correct value return time with the default time format" do
+    it "valid value return time with the default time format" do
       expect(@transform.process_time(80)).must_equal "00:01:20"
     end
 
-    it "custom time format return the time with the custom format" do
+    it "valid value and custom time format return the time with the custom format" do
       expect(@transform.process_time(3720, 'HH:MM')).must_equal "01:02"
     end
   end
